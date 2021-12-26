@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../enums/enums.dart';
 part 'location.g.dart';
 
 enum LocationType {
