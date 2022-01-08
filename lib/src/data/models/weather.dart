@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'weather.g.dart';
 
 enum WeatherState {
@@ -25,6 +26,10 @@ enum WeatherState {
   unknown
 }
 
+extension WeatherStateX on WeatherState {
+  String? get abbr => _$WeatherStateEnumMap[this];
+}
+
 enum WindDirectionCompass {
   @JsonValue('N')
   north,
@@ -43,10 +48,6 @@ enum WindDirectionCompass {
   @JsonValue('NW')
   northWest,
   unknown,
-}
-
-extension WeatherStateX on WeatherState {
-  String? get abbr => _$WeatherStateEnumMap[this];
 }
 
 @JsonSerializable()
