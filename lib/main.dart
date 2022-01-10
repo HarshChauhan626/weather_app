@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/src/config/theme/app_theme.dart';
+import 'package:weather_app/src/presentation/widgets/clock.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: CustomTheme.dark,
+      theme: AppTheme.light,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -32,33 +34,38 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+      ),
+      drawer: Drawer(
+        child: ListView(
           children: [],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              activeIcon: Icon(Icons.home_filled),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              activeIcon: Icon(Icons.search),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.bike_scooter),
-              activeIcon: Icon(Icons.home_filled),
-              label: ""),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              activeIcon: Icon(Icons.home_filled),
-              label: ""),
-        ],
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: double.infinity),
+            Container(
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              width: MediaQuery.of(context).size.width,
+              child: Text(
+                "Yogya,\nIndonesia",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Row(
+              children: [],
+            ),
+            CustomClock(
+              radius: 120,
+              dotRadius: 30,
+            ),
+          ],
+        ),
       ),
     );
   }
