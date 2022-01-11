@@ -35,7 +35,29 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+            icon: Icon(Icons.online_prediction, color: Colors.black),
+            onPressed: () {}),
+        title: RichText(
+          text: TextSpan(children: [
+            TextSpan(
+                text: "San Diego,",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.black)),
+            TextSpan(text: 'USA', style: TextStyle(color: Colors.black))
+          ]),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.black,
+            ),
+            onPressed: () {},
+          )
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -48,15 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(width: double.infinity),
-            Container(
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              width: MediaQuery.of(context).size.width,
-              child: Text(
-                "Yogya,\nIndonesia",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-            ),
             Row(
               children: [],
             ),
@@ -64,8 +77,25 @@ class _MyHomePageState extends State<MyHomePage> {
               radius: 120,
               dotRadius: 30,
             ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [for (int i = 0; i < 4; i++) getRowWidget()])
           ],
         ),
+      ),
+    );
+  }
+
+  Widget getRowWidget() {
+    return Container(
+      height: 70,
+      width: 50,
+      decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.all(Radius.circular(15))),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [Icon(Icons.ac_unit), Text("15")],
       ),
     );
   }

@@ -19,6 +19,8 @@ class _CustomClockState extends State<CustomClock>
   @override
   void initState() {
     super.initState();
+    radius = this.widget.radius;
+    dotRadius = this.widget.dotRadius;
   }
 
   @override
@@ -28,10 +30,13 @@ class _CustomClockState extends State<CustomClock>
       height: 300.0,
       //color: Colors.black12,
       color: Colors.white,
-      child: new Container(
+      child: Container(
         //color: Colors.limeAccent,
-        child: Stack(
-          children: getSurroundingCircles(),
+        child: Transform.rotate(
+          angle: 0,
+          child: Stack(
+            children: getSurroundingCircles(),
+          ),
         ),
       ),
     );
@@ -61,8 +66,8 @@ class _CustomClockState extends State<CustomClock>
           number: i + 1,
         ),
         offset: Offset(
-          (radius - 3) * cos(0.0 + i * pi / 6),
-          (radius - 3) * sin(0.0 + i * pi / 6),
+          (radius - 3) * cos(0.0 + (i - 2) * pi / 6),
+          (radius - 3) * sin(0.0 + (i - 2) * pi / 6),
         ),
       ));
     }
