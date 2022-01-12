@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+
 class CustomClock extends StatefulWidget {
   final double radius;
   final double dotRadius;
@@ -32,11 +34,8 @@ class _CustomClockState extends State<CustomClock>
       color: Colors.white,
       child: Container(
         //color: Colors.limeAccent,
-        child: Transform.rotate(
-          angle: 0,
-          child: Stack(
-            children: getSurroundingCircles(),
-          ),
+        child: Stack(
+          children: getSurroundingCircles(),
         ),
       ),
     );
@@ -51,23 +50,31 @@ class _CustomClockState extends State<CustomClock>
     List<Widget> circles = [
       Transform.translate(
         offset: Offset(0.0, 0.0),
-        child: DotCentre(
+        child: NeumorphicDot(
           radius: radius + 50,
-          color: Colors.red,
+          border: 40,
+          child: Text(
+            "30C",
+            style: TextStyle(color: Colors.black),
+          ),
         ),
       )
     ];
 
     for (int i = 0; i < 12; i++) {
       circles.add(Transform.translate(
-        child: Dot(
+        child: NeumorphicDot(
           radius: dotRadius + 10,
-          color: Colors.blueAccent,
-          number: i + 1,
+          border: 15,
+          show: i == 1,
+          child: Text("${i + 1}",
+              style: TextStyle(
+                color: Colors.grey.shade600,
+              )),
         ),
         offset: Offset(
-          (radius - 3) * cos(0.0 + (i - 2) * pi / 6),
-          (radius - 3) * sin(0.0 + (i - 2) * pi / 6),
+          (radius - 1) * cos(0.0 + (i - 2) * pi / 6),
+          (radius - 1) * sin(0.0 + (i - 2) * pi / 6),
         ),
       ));
     }
@@ -168,5 +175,66 @@ class DotCentre extends StatelessWidget {
             ],
           )),
     );
+  }
+}
+
+class NeumorphicDot extends StatelessWidget {
+  final double radius;
+  final double border;
+  final Widget child;
+  final bool? show;
+  const NeumorphicDot(
+      {Key? key,
+      required this.radius,
+      required this.border,
+      required this.child,
+      this.show})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Neumorphic(
+        style: NeumorphicStyle(
+            boxShape: NeumorphicBoxShape.circle(),
+            depth: getDepth(false),
+            intensity: 0.5),
+        child: Container(
+          height: getRadius(false),
+          color: Colors.white,
+          width: getRadius(false),
+          child: Align(
+            alignment: Alignment.center,
+            child: Neumorphic(
+              style: NeumorphicStyle(
+                  boxShape: NeumorphicBoxShape.circle(),
+                  depth: getDepth(true),
+                  intensity: 0.7),
+              child: Container(
+                  height: getRadius(true),
+                  color: Colors.white,
+                  width: getRadius(true),
+                  child: Center(child: this.child)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  double getDepth(bool top) {
+    if (this.show != null && this.show == false) {
+      return 0;
+    } else {
+      return top ? -5 : 7;
+    }
+  }
+
+  double getRadius(bool top) {
+    if (this.show != null && this.show == false) {
+      return radius;
+    } else {
+      return top ? radius - border : radius;
+    }
   }
 }
