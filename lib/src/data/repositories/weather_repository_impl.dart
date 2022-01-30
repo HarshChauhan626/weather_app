@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:weather_app/src/core/resources/api_result.dart';
 import 'package:weather_app/src/core/resources/dio_client.dart';
 import 'package:weather_app/src/core/resources/network_exceptions.dart';
@@ -8,6 +10,8 @@ import 'package:weather_app/src/domain/entities/weather.dart';
 import 'package:weather_app/src/domain/repositories/weather_repository.dart';
 
 class WeatherRepositoryImpl implements WeatherRepository {
+  WeatherRepositoryImpl(this.apiService);
+
   ApiService apiService = ApiService();
   // @override
   // Future<ApiResult<Location>> getLocation(String query) async {
@@ -34,15 +38,30 @@ class WeatherRepositoryImpl implements WeatherRepository {
   @override
   Future<ApiResult<Weather>> getWeather(String city) async {
     try {
-      final location = await apiService.locationSearch(city);
-      final woeid = location.woeid;
-      final weather = await apiService.getWeather(woeid);
-      return ApiResult.success(
+      final locationResult = await getLocation(city);
+      ApiResult<Weather> apiResult;
+      Location? location;
+      locationResult.when(
+          success: (data) => {location = data},
+          failure: (error) => {apiResult = ApiResult.failure(error: error)});
+      final weather = await apiService.getWeather(location!.woeid);
+      apiResult = ApiResult.success(
           data: Weather(
         temperature: weather.theTemp,
-        location: location.title,
+        location: location?.title ?? "",
         condition: weather.weatherStateAbbr.toCondition,
       ));
+      return apiResult;
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<Location>> getLocation(String city) async {
+    try {
+      final location = await apiService.locationSearch(city);
+      return ApiResult.success(data: location);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

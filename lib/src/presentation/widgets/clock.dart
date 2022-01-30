@@ -18,6 +18,8 @@ class _CustomClockState extends State<CustomClock>
   late double radius;
   late double dotRadius;
 
+  late DateTime dateTime;
+
   @override
   void initState() {
     super.initState();

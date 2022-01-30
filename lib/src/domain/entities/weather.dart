@@ -28,6 +28,11 @@ class Weather extends Equatable {
   final double temperature;
   final WeatherCondition condition;
 
+  static Weather empty() {
+    return Weather(
+        location: "", temperature: 0.0, condition: WeatherCondition.cloudy);
+  }
+
   @override
   List<Object> get props => [location, temperature, condition];
 }
