@@ -1,18 +1,17 @@
-import 'dart:html';
-
 import 'package:weather_app/src/core/resources/api_result.dart';
 import 'package:weather_app/src/core/resources/dio_client.dart';
 import 'package:weather_app/src/core/resources/network_exceptions.dart';
 import 'package:weather_app/src/data/datasources/remote/api_service.dart';
-import 'package:weather_app/src/data/models/weather.dart' hide Weather;
 import 'package:weather_app/src/data/models/location.dart';
+import 'package:weather_app/src/data/models/weather.dart' hide Weather;
 import 'package:weather_app/src/domain/entities/weather.dart';
 import 'package:weather_app/src/domain/repositories/weather_repository.dart';
 
 class WeatherRepositoryImpl implements WeatherRepository {
-  WeatherRepositoryImpl(this.apiService);
 
-  ApiService apiService = ApiService();
+  ApiService apiService;
+
+  WeatherRepositoryImpl(this.apiService);
   // @override
   // Future<ApiResult<Location>> getLocation(String query) async {
   //   try {

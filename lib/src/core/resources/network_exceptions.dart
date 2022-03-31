@@ -66,6 +66,7 @@ class NetworkExceptions with _$NetworkExceptions {
   }
 
   static NetworkExceptions getDioException(error) {
+    print("Network exceptions coming $error");
     if (error is Exception) {
       try {
         NetworkExceptions networkExceptions;

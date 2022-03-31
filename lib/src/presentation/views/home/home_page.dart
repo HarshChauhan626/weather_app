@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/src/config/di.dart';
 import 'package:weather_app/src/core/utils/app_colors.dart';
 import 'package:weather_app/src/core/utils/app_utils.dart';
+import 'package:weather_app/src/core/utils/utilFunctions.dart';
 import 'package:weather_app/src/data/network_info.dart';
 import 'package:weather_app/src/data/repositories/weather_repository_impl.dart';
 import 'package:weather_app/src/domain/usecases/getweather_usecase.dart';
@@ -30,10 +31,7 @@ class HomeScreen extends StatefulWidget {
     //   ),
     // );
     return MaterialPageRoute(
-        builder: (context) => BlocProvider<WeatherInfoCubit>(
-              create: (_) => instance<WeatherInfoCubit>()..initializeData(),
-              child: HomeScreen(),
-            ));
+        builder: (context) => HomeScreen());
   }
 
   @override
@@ -53,75 +51,82 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
+    return BlocProvider<WeatherInfoCubit>(
+      create:(_) => instance<WeatherInfoCubit>()..initializeData(),
+      child: Scaffold(
         backgroundColor: Colors.white,
-        leading: IconButton(
-            icon: Icon(Icons.online_prediction, color: Colors.black),
-            onPressed: () {}),
-        title: RichText(
-          text: TextSpan(children: [
-            TextSpan(
-                text: "Weather App",
-                style: Theme.of(context).textTheme.headline5),
-          ]),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Colors.black,
-            ),
-            onPressed: () async {
-              bool isConnected =
-                  await instance.get<NetworkInfoImpl>().isConnected;
-              if (isConnected) {
-                dynamic city = await Navigator.of(context)
-                    .pushNamed(SearchScreen.routeName);
-                BlocProvider.of<WeatherInfoCubit>(context).getData(city);
-              } else {
-                print('Not connected');
-              }
-            },
-          )
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [],
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: BlocConsumer<WeatherInfoCubit, WeatherInfoState>(
-            listener: (context, state) {
-              // TODO: implement listener
-            },
-            builder: (context, state) {
-              if (state.status!.isLoading) {
-                return CircularProgressIndicator();
-              } else if (state.status!.isError) {
-                return AlertDialog(
-                  content: Text("Oops!!!Something went wrong."),
-                  title: Text("Error"),
-                  actions: [Text("Ok")],
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          leading: IconButton(
+              icon: Icon(Icons.online_prediction, color: Colors.black),
+              onPressed: () {}),
+          title: RichText(
+            text: TextSpan(children: [
+              TextSpan(
+                  text: "Weather App",
+                  style: Theme.of(context).textTheme.headline5),
+            ]),
+          ),
+          actions: [
+            Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.add,
+                    color: Colors.black,
+                  ),
+                  onPressed: () async {
+                    bool isConnected =
+                        await instance.get<NetworkInfoImpl>().isConnected;
+                    if (isConnected) {
+                      dynamic city = await Navigator.of(context)
+                          .pushNamed(SearchScreen.routeName);
+                      if(city!=null){
+                        BlocProvider.of<WeatherInfoCubit>(context).getData(city);
+                      }
+                    } else {
+                      print('Not connected');
+                    }
+                  },
                 );
-              } else {
-                return _buildView();
               }
-            },
+            )
+          ],
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: [],
           ),
         ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: BlocConsumer<WeatherInfoCubit, WeatherInfoState>(
+              listener: (context, state) {
+                // TODO: implement listener
+                if (state.status!.isError) {
+                  showAlertDialog(context, content: "Oops!!!Something went wrong");
+                }
+                print("Selected index is ${selectedIndex}");
+              },
+              builder: (context, state) {
+                if (state.status!.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                } else {
+                  return _buildView();
+                }
+              },
+            ),
+          ),
+        ),
+        // bottomNavigationBar: BottomNavigationBar(
+        //   items: [
+        //     BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("")),
+        //     BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("")),
+        //     BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("")),
+        //   ],
+        // ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: [
-      //     BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("")),
-      //     BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("")),
-      //     BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("")),
-      //   ],
-      // ),
     );
   }
 

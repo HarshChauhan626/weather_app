@@ -11,7 +11,12 @@ class DioClient {
 
   static header() => {"Content-Type": "application/json"};
 
+  DioClient(){
+    init();
+  }
+
   Future<DioClient> init() async {
+    print('Dio client init running');
     _dio = Dio(BaseOptions(baseUrl: Globals.kBaseUrl, headers: header()));
     initInterceptors();
     return this;
@@ -24,6 +29,7 @@ class DioClient {
           // logger.i(
           //     "REQUEST[${requestOptions.method}] => PATH: ${requestOptions.path}"
           //     "=> REQUEST VALUES: ${requestOptions.queryParameters} => HEADERS: ${requestOptions.headers}");
+          print("Request going is ${requestOptions.baseUrl}----${requestOptions.uri}--${requestOptions.path}");
           return handler.next(requestOptions);
         },
         onResponse: (response, handler) {
@@ -56,7 +62,9 @@ class DioClient {
         response = await _dio!.get(url, queryParameters: params);
       }
 
-      return jsonDecode(response.data);
+      print('Response coming is ${response.statusCode}');
+      print("Response coming is ${response.data}");
+      return response.data;
 
       // if (response.statusCode == 200) {
       //   return response;
@@ -70,6 +78,7 @@ class DioClient {
     } on FormatException catch (_) {
       throw FormatException("Unable to process the data");
     } catch (e) {
+      print(e);
       throw e;
     }
   }

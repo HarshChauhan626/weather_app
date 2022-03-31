@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/src/config/custom_router.dart';
 import 'package:weather_app/src/config/di.dart';
-import 'package:weather_app/src/config/theme/app_theme.dart';
+import 'package:weather_app/src/config/app_theme.dart';
 import 'package:weather_app/src/core/utils/app_colors.dart';
 import 'package:weather_app/src/core/utils/app_utils.dart';
 import 'package:weather_app/src/presentation/views/home/home_page.dart';

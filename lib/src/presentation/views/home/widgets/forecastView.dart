@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/src/core/utils/app_colors.dart';
+import 'package:weather_app/src/presentation/cubits/weather_info_cubit.dart';
 
 class ForecastTabBarView extends StatelessWidget {
-  const ForecastTabBarView({Key? key}) : super(key: key);
+  const ForecastTabBarView({Key? key,int selectedTabIndex=0}) : super(key: key);
 
-  static int selectedTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -12,11 +13,11 @@ class ForecastTabBarView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         children: [
-          getTabWidget(selectedTabIndex, 0, context),
+          getTabWidget(0, context),
           SizedBox(
             width: 25,
           ),
-          getTabWidget(selectedTabIndex, 1, context),
+          getTabWidget(1, context),
           SizedBox(width: 60),
           TextButton(
               onPressed: () {},
@@ -35,30 +36,35 @@ class ForecastTabBarView extends StatelessWidget {
     );
   }
 
-  Widget getTabWidget(int selectedIndex, int index, BuildContext context) {
+  Widget getTabWidget(int index, BuildContext context) {
     return InkWell(
       onTap: () {
-        // setState(() {
-        //   selectedTabIndex = index;
-        // });
+        print('On tap clicked');
+        BlocProvider.of<WeatherInfoCubit>(context).tabChanged(index);
       },
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(index == 1 ? "Tommorow" : "Today",
-                style: Theme.of(context).textTheme.headline6),
-            AnimatedContainer(
-                duration: Duration(milliseconds: 400),
-                height: index == selectedIndex ? 5 : 0,
-                width: index == selectedIndex ? 20 : 0,
-                decoration: BoxDecoration(
-                    color: index == selectedIndex
-                        ? AppColors.primaryColor
-                        : Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))))
-          ],
-        ),
+      child: BlocBuilder<WeatherInfoCubit,WeatherInfoState>(
+        builder:(context,state){
+          int selectedIndex=state.selectedIndex??0;
+          print(state.selectedIndex);
+          return Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(index == 1 ? "Tommorow" : "Today",
+                    style: Theme.of(context).textTheme.headline6),
+                AnimatedContainer(
+                    duration: Duration(milliseconds: 400),
+                    height: index == selectedIndex ? 5 : 0,
+                    width: index == selectedIndex ? 20 : 0,
+                    decoration: BoxDecoration(
+                        color: index == selectedIndex
+                            ? AppColors.primaryColor
+                            : Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10))))
+              ],
+            ),
+          );
+        }
       ),
     );
   }

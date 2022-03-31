@@ -7,9 +7,9 @@ import 'package:weather_app/src/data/models/models.dart';
 class ApiService extends BaseApiService {
   DioClient? dioClient;
 
-  ApiRepository() {
-    dioClient = DioClient();
-    dioClient!.init();
+  ApiService(this.dioClient) {
+    // dioClient = DioClient();
+    // dioClient?.init();
   }
 
   @override
@@ -28,17 +28,27 @@ class ApiService extends BaseApiService {
     // } catch (e) {
     //   return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     // }
-    final locationResponse = await dioClient!.request(
-        url: '/api/location/search',
-        method: Method.GET,
-        params: {'query': query});
+    try {
+      final locationResponse = await dioClient!.request(
+          url: '/api/location/search/',
+          method: Method.GET,
+          params: {'query': query});
 
-    final locationJson = locationResponse as List;
+      final locationJson = locationResponse as List<dynamic>;
 
-    final location =
-        Location.fromJson(locationJson.first as Map<String, dynamic>);
+      print("Location json running $locationJson");
 
-    return location;
+      final location =
+          Location.fromJson(locationJson.first as Map<String, dynamic>);
+
+      return location;
+    } on Exception catch (e,s) {
+      // TODO
+      print("Exception coming in api serve location search");
+      print(s);
+      print(e);
+      throw e;
+    }
   }
 
   @override
@@ -55,13 +65,22 @@ class ApiService extends BaseApiService {
     // } catch (e) {
     //   return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     // }
-    final weatherResponse = await dioClient!
-        .request(url: '/api/location/$locationId', method: Method.GET);
+    try {
+      final weatherResponse = await dioClient!
+          .request(url: '/api/location/$locationId', method: Method.GET);
 
-    final weatherJson = weatherResponse as Map<String, dynamic>;
+      final bodyJson = weatherResponse as Map<String, dynamic>;
 
-    final weather = Weather.fromJson(weatherJson);
+      final weatherJson = bodyJson['consolidated_weather'] as List;
 
-    return weather;
+      final weather = Weather.fromJson(weatherJson.first as Map<String,dynamic>);
+
+      return weather;
+    } on Exception catch (e,s) {
+      // TODO
+      print(s);
+      print(e);
+      throw e;
+    }
   }
 }

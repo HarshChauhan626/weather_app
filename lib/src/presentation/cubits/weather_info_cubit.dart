@@ -13,9 +13,17 @@ class WeatherInfoCubit extends Cubit<WeatherInfoState> {
 
   WeatherInfoCubit(this._getWeatherUseCase) : super(WeatherInfoState.initial());
 
+
   void tabChanged(int indexVal) {
+    print("Tab changed called");
     emit(state.copyWith(selectedIndex: indexVal));
   }
+
+  void listItemClicked(int indexVal) {
+    print("Tab changed called");
+    emit(state.copyWith(selectedItemIndex: indexVal));
+  }
+
 
   Future<void> initializeData() async {
     emit(state.copyWith(status: WeatherInfoStatus.loading));
@@ -24,6 +32,7 @@ class WeatherInfoCubit extends Cubit<WeatherInfoState> {
     dataState.when(success: (data) {
       emit(state.copyWith(weather: data, status: WeatherInfoStatus.success));
     }, failure: (NetworkExceptions exceptions) {
+      print(exceptions.toString());
       emit(state.copyWith(status: WeatherInfoStatus.error));
       print('OOps something went wrong');
     });
@@ -36,6 +45,7 @@ class WeatherInfoCubit extends Cubit<WeatherInfoState> {
     dataState.when(success: (data) {
       emit(state.copyWith(weather: data, status: WeatherInfoStatus.success));
     }, failure: (NetworkExceptions exceptions) {
+      print(exceptions.toString());
       emit(state.copyWith(status: WeatherInfoStatus.error));
       print('OOps something went wrong');
     });

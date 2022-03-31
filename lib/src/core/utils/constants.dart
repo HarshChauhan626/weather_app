@@ -1,3 +1,3 @@
 class Globals {
-  static const kBaseUrl = "";
+  static const kBaseUrl = "https://www.metaweather.com";
 }
